@@ -1,27 +1,28 @@
-from deep_translator import GoogleTranslator
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import os
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from deep_translator import GoogleTranslator
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")  # Ambil token dari Railway Variables
 
-def start(update, context):
-    update.message.reply_text("Halo! Kirim teks bahasa Indonesia, nanti aku terjemahin ke Inggris 😁")
+# Start Command
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Halo! Kirim teks ke saya, nanti saya terjemahkan ke bahasa Inggris 🇬🇧.")
 
-def translate_text(update, context):
+# Handler untuk teks
+async def translate_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
-    try:
-        translated = GoogleTranslator(source="id", target="en").translate(text)
-        update.message.reply_text(f"🇮🇩: {text}\n\n🇬🇧: {translated}")
-    except Exception as e:
-        update.message.reply_text(f"⚠️ Error: {e}")
+    translated = GoogleTranslator(source="auto", target="en").translate(text)
+    await update.message.reply_text(f"🇮🇩: {text}\n\n🇬🇧: {translated}")
 
 def main():
-    updater = Updater(BOT_TOKEN, use_context=True)
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, translate_text))
-    updater.start_polling()
-    updater.idle()
+    app = Application.builder().token(BOT_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_text))
+
+    print("🚀 Bot sudah jalan...")
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
