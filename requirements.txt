@@ -1,1 +1,3 @@
-Procfile
+python-telegram-bot==20.3
+deep-translator==1.11.4
+
