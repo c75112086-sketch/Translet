@@ -1,0 +1,27 @@
+from deep_translator import GoogleTranslator
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import os
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+def start(update, context):
+    update.message.reply_text("Halo! Kirim teks bahasa Indonesia, nanti aku terjemahin ke Inggris 😁")
+
+def translate_text(update, context):
+    text = update.message.text
+    try:
+        translated = GoogleTranslator(source="id", target="en").translate(text)
+        update.message.reply_text(f"🇮🇩: {text}\n\n🇬🇧: {translated}")
+    except Exception as e:
+        update.message.reply_text(f"⚠️ Error: {e}")
+
+def main():
+    updater = Updater(BOT_TOKEN, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, translate_text))
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
