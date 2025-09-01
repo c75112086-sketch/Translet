@@ -3,7 +3,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from deep_translator import GoogleTranslator
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")  # Ambil token dari Railway Variables
+BOT_TOKEN ="8271511008:AAFCGoKtP9124ZHj84fLHo-XZotkU1R5sfg"  # Ambil token dari Railway Variables
 
 # Start Command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -18,7 +18,7 @@ async def translate_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("start"w, start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, translate_text))
 
     print("🚀 Bot sudah jalan...")
